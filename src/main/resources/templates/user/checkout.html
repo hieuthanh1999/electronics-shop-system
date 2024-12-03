@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/user.html :: headerfiles">
+
+</head>
+
+<body>
+<!-- Topbar Start -->
+<div th:replace="fragments/user.html :: topbar">
+
+</div>
+<!-- Topbar End -->
+
+
+<!-- Navbar Start -->
+<div th:replace="fragments/user.html :: navbar">
+
+</div>
+<!-- Navbar End -->
+
+<!-- Page Header Start -->
+<div th:replace="fragments/user.html :: pageheader">
+
+</div>
+<!-- Page Header End -->
+<!-- Checkout Start -->
+<div class="container-fluid pt-5" th:if="${session.carts} != null ? ${session.carts.getItems().size()} > 0 : false">
+    <form th:object="${order}" th:action="@{/order/save}" th:method="post">
+        <div class="row px-xl-5">
+            <div class="col-lg-8">
+                <div class="mb-4">
+                    <h4 class="font-weight-semi-bold mb-4">Địa chỉ giao hàng</h4>
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <label for="full-name">Tên đầy đủ</label>
+                            <input th:field="*{fullname}" id="full-name" class="form-control" minlength="10" type="text" placeholder="Nguyễn A" required>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label for="email">E-mail</label>
+                            <input th:field="*{email}" id="email" class="form-control" type="email" placeholder="example@email.com" >
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label for="phone">Số điện thoại</label>
+                            <input th:field="*{phone}" id="phone" class="form-control" type="text" placeholder="+8433 456 789">
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label for="address">Địa chỉ</label>
+                            <input th:field="*{address}" id="address" class="form-control" type="text" placeholder="">
+                        </div>
+                    </div>
+                </div>
+                <div class="collapse mb-4" id="shipping-address">
+                    <h4 class="font-weight-semi-bold mb-4">Shipping Address</h4>
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <label>First Name</label>
+                            <input class="form-control" type="text" placeholder="John">
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label>Last Name</label>
+                            <input class="form-control" type="text" placeholder="Doe">
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label>E-mail</label>
+                            <input class="form-control" type="text" placeholder="example@email.com">
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label>Mobile No</label>
+                            <input class="form-control" type="text" placeholder="+123 456 789">
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label>Address Line 1</label>
+                            <input class="form-control" type="text" placeholder="123 Street">
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label>Address Line 2</label>
+                            <input class="form-control" type="text" placeholder="123 Street">
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label>Country</label>
+                            <select class="custom-select">
+                                <option selected>United States</option>
+                                <option>Afghanistan</option>
+                                <option>Albania</option>
+                                <option>Algeria</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label>City</label>
+                            <input class="form-control" type="text" placeholder="New York">
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label>State</label>
+                            <input class="form-control" type="text" placeholder="New York">
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label>ZIP Code</label>
+                            <input class="form-control" type="text" placeholder="123">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card border-secondary mb-5">
+                    <div class="card-header bg-secondary border-0">
+                        <h4 class="font-weight-semi-bold m-0">Order Total</h4>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="font-weight-medium mb-3">Products</h5>
+                        <div class="d-flex justify-content-between" th:each="item :${session.carts.items}">
+                            <p th:text="${item.product.name}" class="col-4"></p>
+                            <p class="col-6">Số lượng: [[${item.quantity}]]</p>
+                            <p th:text="${item.finalPrice} * ${item.quantity}" class="col-2"></p>
+                        </div>
+                        <hr class="mt-0">
+                        <div class="d-flex justify-content-between mb-3 pt-1">
+                            <h6 class="font-weight-medium">Subtotal</h6>
+                            <h6 class="font-weight-medium" th:text="${session.carts.total}">$150</h6>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <h6 class="font-weight-medium">Discount</h6>
+                            <h6 class="font-weight-medium" th:text="${discount} == null ? 0 : ${discount.discount}"></h6>
+                            <input type="text" th:field="*{discountName}" th:value="${discount} == null ? null : ${discount.discount}" hidden>
+                        </div>
+                    </div>
+                    <div class="card-footer border-secondary bg-transparent">
+                        <div class="d-flex justify-content-between mt-2">
+                            <h5 class="font-weight-bold" >Total</h5>
+                            <h5 class="font-weight-bold" th:text="${session.carts.total} - (${discount} == null ? 0 : ${discount.discount})">$160</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="card border-secondary mb-5">
+                    <div class="card-header bg-secondary border-0">
+                        <h4 class="font-weight-semi-bold m-0">Phương thức thanh toán</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group" th:each="method : ${T(com.doantotnghiep.nhanambooks.enums.PaymentMethod).values()}">
+                            <div class="custom-control custom-radio">
+                                <input th:field="*{paymentMethod}" type="radio" class="custom-control-input" name="payment" th:id="${method}" th:value="${method}">
+                                <label class="custom-control-label" th:for="${method}" th:text="${method.label}"></label>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="card-footer border-secondary bg-transparent">
+                        <button class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3 " id="checkout" type="submit">Đặt hàng</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div th:if="${session.carts} != null ? ${session.carts.getItems().size()} == 0 : true">Không có sản phẩm trong giỏ hàng</div>
+<!-- Checkout End -->
+
+
+
+<!-- Footer Start -->
+<div th:replace="fragments/user.html :: footer">
+
+</div>
+<!-- Footer End -->
+
+
+<!-- Back to Top -->
+<a href="#" class="btn btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
+
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+<script src="/007eshopper-1.0.0/lib/easing/easing.min.js"></script>
+<script src="/007eshopper-1.0.0/lib/owlcarousel/owl.carousel.min.js"></script>
+
+<!-- Contact Javascript File -->
+<script src="/007eshopper-1.0.0/mail/jqBootstrapValidation.min.js"></script>
+<script src="/007eshopper-1.0.0/mail/contact.js"></script>
+
+<!-- Template Javascript -->
+<script src="/007eshopper-1.0.0/js/main.js"></script>
+<script th:replace="fragments/user.html :: scriptaddtocart"></script>
+</body>
+
+</html>

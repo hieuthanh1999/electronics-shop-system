@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/user.html :: headerfiles">
+
+</head>
+
+<body>
+<!-- Topbar Start -->
+<div th:replace="fragments/user.html :: topbar">
+
+</div>
+<!-- Topbar End -->
+
+
+<!-- Navbar Start -->
+<div th:replace="fragments/user.html :: navbar">
+
+</div>
+<!-- Navbar End -->
+
+<!-- Page Header Start -->
+<div th:replace="fragments/user.html :: pageheader">
+
+</div>
+<!-- Shop Start -->
+<div class="container-fluid pt-5">
+    <div class="row px-xl-5">
+        <!-- Shop Product Start -->
+        <div class="col-lg-9 col-md-12">
+            <div class="row pb-3">
+                <div class="col-12 pb-1">
+                    <div class="panel-body">
+                        <form class="form-inline" role="form" th:action="@{/product}">
+                            <div class="form-group">
+                                <label class="sr-only" for="search">Từ khoá</label>
+                                <input type="search" class="form-control" id="search" name="keyword" th:value="${keyword}" placeholder="Tên sản phẩm">
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-lg-6" for="inlineCheckbox1">Giá</label>
+                                <div class="col-lg-10">
+                                    <label class="radio-inline">
+                                        <input type="radio" id="inlineCheckbox1" name="sort" value="price,asc" [[${sortDirection} == 'asc' ? checked : '']]> Tăng dần
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" id="inlineCheckbox2" name="sort" value="price,desc" [[${sortDirection} == 'desc' ? checked : '']]> Giảm dần
+                                    </label>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                        </form>
+
+                    </div>
+                </div>
+                <div th:each="product : ${products}" class="col-lg-4 col-md-6 col-sm-12 pb-1">
+                    <div class="card product-item border-0 mb-4">
+                        <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
+                            <img class="img-fluid w-100" th:src="@{${product.image}}" alt="">
+                        </div>
+                        <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
+                            <h6 class="text-truncate mb-3" th:text="${product.name}">Colorful Stylish Shirt</h6>
+                            <div class="d-flex justify-content-center">
+                                <h6>[[${product.price} - ${product.discount}]]</h6><h6 class="text-muted ml-2"><del>[[${product.price}]]</del></h6>
+                            </div>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between bg-light border">
+                            <a th:href="@{'/product/' + ${product.id}}" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
+                            <a th:href="@{'/cart/add'}" class="btn-add-to-cart btn btn-sm text-dark p-0" th:productid="${product.id}" th:quantity="0"><i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
+                            <a th:href="@{'/love-list/add/' + ${product.id}}" class="btn-add-to-love-list btn btn-sm text-dark p-0" th:productid="${product.id}" th:quantity="1"><i class="fas fa-heart text-primary mr-1"></i>Add To Love List</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 pb-1">
+                    <nav aria-label="Pagination" th:if="${totalPages > 0}">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                                <a th:replace="fragments/paging :: paging(1, '<<', 'First Page')"></a>
+                            </li>
+                            <li class="page-item font-weight-bold" th:classappend="${currentPage == 1} ? 'disabled'">
+                                <a th:replace="fragments/paging :: paging(${currentPage - 1}, 'Prev', 'Previous Page')"></a>
+                            </li>
+                            <li class="page-item disabled" th:if="${currentPage - 2 > 1}">
+                                <a class="page-link" href="#">...</a>
+                            </li>
+                            <li class="page-item" th:classappend="${page == currentPage} ? 'active'"
+                                th:each="page : ${#numbers.sequence(currentPage > 2 ? currentPage - 2 : 1, currentPage + 2 < totalPages ? currentPage + 2 : totalPages)}">
+                                <a th:replace="fragments/paging :: paging(${page}, ${page}, 'Page ' + ${page})"></a>
+                            </li>
+                            <li class="page-item disabled" th:if="${currentPage + 2 < totalPages}">
+                                <a class="page-link" href="#">...</a>
+                            </li>
+                            <li class="page-item font-weight-bold" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                                <a th:replace="fragments/paging :: paging(${currentPage + 1},'Next', 'Next Page')"></a>
+                            </li>
+                            <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                                <a th:replace="fragments/paging :: paging(${totalPages}, '>>', 'Last Page')"></a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <!-- Shop Product End -->
+    </div>
+</div>
+<!-- Shop End -->
+<!-- Page Header End -->
+
+
+<!-- Footer Start -->
+<div th:replace="fragments/user.html :: footer">
+
+</div>
+<!-- Footer End -->
+
+
+<!-- Back to Top -->
+<a href="#" class="btn btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
+
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+<script src="/007eshopper-1.0.0/lib/easing/easing.min.js"></script>
+<script src="/007eshopper-1.0.0/lib/owlcarousel/owl.carousel.min.js"></script>
+
+<!-- Contact Javascript File -->
+<script src="/007eshopper-1.0.0/mail/jqBootstrapValidation.min.js"></script>
+<script src="/007eshopper-1.0.0/mail/contact.js"></script>
+
+<!-- Template Javascript -->
+<script src="/007eshopper-1.0.0/js/main.js"></script>
+<script th:replace="fragments/user.html :: scriptaddtocart"></script>
+</body>
+
+</html>

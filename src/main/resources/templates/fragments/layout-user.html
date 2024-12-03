@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/user.html :: headerfiles">
+
+</head>
+
+<body>
+<!-- Topbar Start -->
+<div th:replace="fragments/user.html :: topbar">
+
+</div>
+<!-- Topbar End -->
+
+
+<!-- Navbar Start -->
+<div th:replace="fragments/user.html :: navbar">
+
+</div>
+<!-- Navbar End -->
+
+<!-- Page Header Start -->
+<div th:replace="fragments/user.html :: pageheader">
+
+</div>
+<!-- Page Header End -->
+
+
+<!-- Footer Start -->
+<div th:replace="fragments/user.html :: footer">
+
+</div>
+<!-- Footer End -->
+
+
+<!-- Back to Top -->
+<a href="#" class="btn btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
+
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+<script src="/007eshopper-1.0.0/lib/easing/easing.min.js"></script>
+<script src="/007eshopper-1.0.0/lib/owlcarousel/owl.carousel.min.js"></script>
+
+<!-- Contact Javascript File -->
+<script src="/007eshopper-1.0.0/mail/jqBootstrapValidation.min.js"></script>
+<script src="/007eshopper-1.0.0/mail/contact.js"></script>
+
+<!-- Template Javascript -->
+<script src="/007eshopper-1.0.0/js/main.js"></script>
+<script th:replace="fragments/user.html :: scriptaddtocart"></script>
+</body>
+
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/user.html :: headerfiles">
+
+</head>
+
+<body>
+<!-- Topbar Start -->
+<div th:replace="fragments/user.html :: topbar">
+
+</div>
+<!-- Topbar End -->
+
+
+<!-- Navbar Start -->
+<div th:replace="fragments/user.html :: navbar">
+
+</div>
+<!-- Navbar End -->
+
+<!-- Page Header Start -->
+<div th:replace="fragments/user.html :: pageheader">
+
+</div>
+<!-- Page Header End -->
+
+<!-- Cart Start -->
+<div class="container-fluid pt-5" id="content-cart">
+    <div class="row px-xl-5">
+        <div class="col-lg-8 table-responsive mb-5">
+            <table th:if="${session.lovelists} != null ? ${session.lovelists.loves.size()} > 0 : false" class="table table-bordered text-center mb-0">
+                <thead class="bg-secondary text-dark">
+                <tr>
+                    <th>Products</th>
+                    <th>Price</th>
+                    <th>Remove</th>
+                </tr>
+                </thead>
+                <tbody class="align-middle">
+                <tr th:each="item : ${session.lovelists.loves}">
+                    <td class="align-middle"><img th:src="${item.product.image}" alt="" style="width: 50px;"> [[${item.product.name}]]</td>
+                    <td class="align-middle price" th:productid="${item.product.id}">[[${item.product.price}]]</td>
+                    <td class="align-middle"><a th:href="@{'/love-list/delete/' + ${item.id}}" class="btn btn-sm btn-primary" ><i class="fa fa-times"></i></a></td>
+                    <td class="align-middle"><a th:href="@{'/cart/add'}" class="btn-add-to-cart btn btn-sm text-dark p-0" th:productid="${item.product.id}" th:quantity="0"><i class="fas fa-shopping-cart text-primary mr-1"></i></a></td>
+                </tr>
+                </tbody>
+            </table>
+            <div th:if="${session.lovelists} != null ? ${session.lovelists.loves.size()} == 0 : true">Không có sản phẩm trong danh sách yêu thích</div>
+        </div>
+    </div>
+</div>
+<!-- Cart End -->
+
+<!-- Footer Start -->
+<div th:replace="fragments/user.html :: footer">
+
+</div>
+<!-- Footer End -->
+
+
+<!-- Back to Top -->
+<a href="#" class="btn btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
+
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+<script src="/007eshopper-1.0.0/lib/easing/easing.min.js"></script>
+<script src="/007eshopper-1.0.0/lib/owlcarousel/owl.carousel.min.js"></script>
+
+<!-- Contact Javascript File -->
+<script src="/007eshopper-1.0.0/mail/jqBootstrapValidation.min.js"></script>
+<script src="/007eshopper-1.0.0/mail/contact.js"></script>
+
+<!-- Template Javascript -->
+<script src="/007eshopper-1.0.0/js/main.js"></script>
+<script th:replace="fragments/user.html :: scriptaddtocart"></script>
+<script th:fragment="scriptaddtocart">
+    $(document).ready(function () {
+        $(".quantityinput").on("change",function (event) {
+
+            if($(this).attr("value") >= 1){
+                const price = $("[productid=" + $(this).attr("productid") + "].price").text();
+                const product_total_element = "[productid=" + $(this).attr("productid") + "].product-total";
+                console.log(product_total_element);
+                $(product_total_element).text($(this).val() * price);
+                fire_ajax_submit_change_quantity($(this));
+            }
+        });
+
+        $("#button-coupon").on("click",function (event){
+            fire_ajax_discount();
+        });
+
+    });
+
+    function fire_ajax_discount(){
+        $.ajax({
+            type: "post",
+            contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+            url: "/discount/exists",
+            data:{"name":$("#input-coupon").val()},
+            dataType: "json",
+            cache: false,
+            timeout: 2000,
+            success: function (data) {
+                if(data.valid === true ){
+                    console.log(window.location.origin);
+                    $("#discount").text(data.discount.discount);
+                    $("#total").text($("#subtotal").text() - data.discount.discount);
+                    $("#message").text("Bạn đã áp dụng mã thành công");
+                    $("#checkout").attr("href",window.location.origin + "/checkout?discount=" + data.discount.name);
+                } else {
+                    console.log(data);
+                    $("#discount").text(0);
+                    $("#total").text($("#subtotal"));
+                    $("#message").text("Mã giảm giá không hợp lệ!");
+
+                }
+            }
+        });
+    }
+
+    function fire_ajax_submit_change_quantity(input) {
+        var jinput = {"productid": input.attr("productid"), "quantity": input.val()};
+        $.ajax({
+            type: "post",
+            contentType: "application/json",
+            url: "/cart/add",
+            data: JSON.stringify(jinput),
+            dataType: 'json',
+            cache: false,
+            timeout: 2000,
+            success: function (data) {
+                var json = Object.keys(data).length;
+                $('#subtotal').text(data.total);
+                $('#total').text(data.total - $("#discount").text());
+            },
+            error: function (e) {
+                console.log("ERROR : ", e);
+            }
+        });
+    }
+</script>
+</body>
+
+</html>
